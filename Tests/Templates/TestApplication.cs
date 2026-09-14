@@ -2,7 +2,6 @@
 using JuraFramework.Scenes;
 using JuraFramework.Tk;
 using System;
-using System.Collections.Generic;
 
 namespace JuraFramework.Tests.Templates
 {
@@ -16,10 +15,10 @@ namespace JuraFramework.Tests.Templates
         public override void Start()
         {
             Mesh mesh = new Mesh();
-            mesh.vertices.Add(new Float3(-0.9f, 0.9f, 0f)); // Top left
-            mesh.vertices.Add(new Float3(0.9f, -0.9f, 0f)); // Bottom right
-            mesh.vertices.Add(new Float3(-0.9f, -0.9f, 0f)); // Bottom left
-            mesh.vertices.Add(new Float3(0.9f, 0.9f, 0f)); // Top right
+            mesh.vertices.Add(new Vertex(new Float3(-0.2f, 0.2f, 0f), new Float2(0f, 1f))); // Top left
+            mesh.vertices.Add(new Vertex(new Float3(0.2f, -0.2f, 0f), new Float2(1f, 0f))); // Bottom right
+            mesh.vertices.Add(new Vertex(new Float3(-0.2f, -0.2f, 0f), new Float2(0f, 0f))); // Bottom left
+            mesh.vertices.Add(new Vertex(new Float3(0.2f, 0.2f, 0f), new Float2(1f, 1f))); // Top right
 
             mesh.indices = [0, 1, 2, 0, 3, 1];
 

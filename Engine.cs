@@ -1,14 +1,14 @@
 ﻿#nullable disable
 
+using JuraFramework.Graphics.Display;
 using JuraFramework.Graphics.Rendering;
-using Veldrid.Sdl2;
 using Veldrid.StartupUtilities;
 
 namespace JuraFramework
 {
     public class Engine
     {
-        public Sdl2Window Window { get; private set; }
+        public Window Window { get; private set; }
         public Renderer Renderer { get; private set; }
         public Application TargetApplication { get; private set; }
 
@@ -20,19 +20,9 @@ namespace JuraFramework
         // Initialize new window and Renderer
         public void Run()
         {
-            WindowCreateInfo windowCI = new WindowCreateInfo
-            {
-                X = 100,
-                Y = 100,
-                WindowWidth = 1366,
-                WindowHeight = 768,
-                WindowTitle = TargetApplication.Title
-            };
-
-            Window = VeldridStartup.CreateWindow(ref windowCI);
+            Window = new Window(TargetApplication.Title, 1280, 720);
             Renderer = new Renderer(this);
             TargetApplication.ApplicationHost = this;
-
             EngineLoop();
         }
 
@@ -41,12 +31,12 @@ namespace JuraFramework
             Renderer.CreateResources();
             TargetApplication.Start();
 
-            while (Window.Exists)
+            while (Window.MainWindow.Exists)
             {
-                Window.PumpEvents();
+                Window.MainWindow.PumpEvents();
                 Renderer.BeginFrame();
                 TargetApplication.Update();
-                Renderer.RenderFrame(this);
+                Renderer.DrawScene(TargetApplication.ActiveScene);
                 Renderer.EndFrame();
             }
 

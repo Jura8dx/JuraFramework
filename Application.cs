@@ -13,7 +13,7 @@ namespace JuraFramework
         public string Title { get; set; }
 
         public Engine ApplicationHost { get; set; }
-        public Sdl2Window Window => ApplicationHost?.Window;
+        public Sdl2Window Window => ApplicationHost?.Window.MainWindow;
         public Scene ActiveScene { get; protected set; }
 
         public virtual void Update() { }

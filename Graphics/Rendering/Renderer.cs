@@ -1,6 +1,7 @@
 ﻿#nullable disable
 
 using JuraFramework.Objects;
+using JuraFramework.Scenes;
 using System;
 using Veldrid;
 using Veldrid.StartupUtilities;
@@ -15,6 +16,7 @@ namespace JuraFramework.Graphics.Rendering
         public CommandList Commands { get; set; }
         public Shader[] Shaders { get; set; }
         public Pipeline Pipeline { get; set; }
+        private Viewport viewport;
 
         public Renderer(Engine engine)
         {
@@ -24,22 +26,24 @@ namespace JuraFramework.Graphics.Rendering
                 PreferDepthRangeZeroToOne = true,
             };
 
-            Device = VeldridStartup.CreateGraphicsDevice(engine.Window, options);
+            Device = VeldridStartup.CreateGraphicsDevice(engine.Window.MainWindow, options);
             Factory = Device.ResourceFactory;
         }
 
         public void CreateResources()
         {
             // Initialize shaders
-            VertexElementDescription positionSemantic = new("Position", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float3);
-            VertexLayoutDescription vertexLayout = new(positionSemantic);
+            VertexElementDescription positionSemantic = new("POSITION", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float3);
+            VertexElementDescription uvSemantic = new("TEXCOORD", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float2);
+
+            VertexLayoutDescription vertexLayout = new(positionSemantic, uvSemantic);
 
             Shaders = GraphicsShader.GetShader("TestShader", Factory);
 
             // Create pipeline
             GraphicsPipelineDescription pipelineDescription = new();
             pipelineDescription.BlendState = BlendStateDescription.SingleOverrideBlend;
-
+            
             pipelineDescription.DepthStencilState = new(
                 depthTestEnabled: true,
                 depthWriteEnabled: true,
@@ -80,9 +84,9 @@ namespace JuraFramework.Graphics.Rendering
             Device.SwapBuffers();
         }
 
-        public void RenderFrame(Engine engine)
+        public void DrawScene(Scene scene)
         {
-            foreach(Mesh mesh in engine.TargetApplication.ActiveScene.renderableObjects)
+            foreach(Mesh mesh in scene.renderableObjects)
             {
                 Commands.SetVertexBuffer(0, mesh.vertexBuffer);
                 Commands.SetIndexBuffer(mesh.indexBuffer, IndexFormat.UInt32);

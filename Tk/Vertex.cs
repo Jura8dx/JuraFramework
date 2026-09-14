@@ -3,9 +3,11 @@
 namespace JuraFramework.Tk
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct Vertex
+    public struct Vertex(Float3 position, Float2 uv)
     {
-        public Float3 position;
-        public Float2 uv;
+        public Float3 position = position;
+        public Float2 uv = uv;
+
+        public const int SizeInBytes = 20;
     }
 }
