@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="SixLabors.ImageSharp" Version="4.1.2" />
     <PackageReference Include="Veldrid" Version="4.9.0" />
     <PackageReference Include="Veldrid.SPIRV" Version="1.0.15" />
     <PackageReference Include="Veldrid.StartupUtilities" Version="4.9.0" />

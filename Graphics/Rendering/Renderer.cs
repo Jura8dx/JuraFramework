@@ -1,118 +1,42 @@
-﻿#nullable disable
-
-using JuraFramework.Objects;
-using JuraFramework.Scenes;
+﻿using JuraFramework.Core;
 using System;
 using Veldrid;
-using Veldrid.StartupUtilities;
+
+#nullable disable
 
 namespace JuraFramework.Graphics.Rendering
 {
-    public class Renderer : IDisposable
+    /// <summary>
+    /// Simple class responsible for instancing the necessary quads that make up a <see cref="Scene"/>
+    /// </summary>
+    public abstract class Renderer
     {
         public GraphicsDevice Device { get; set; }
-        public ResourceFactory Factory { get; private set; }
-        public Swapchain MainSwapchain { get; private set; }
-        public CommandList Commands { get; set; }
-        public Shader[] Shaders { get; set; }
-        public Pipeline Pipeline { get; set; }
-        private Viewport viewport;
+        public ResourceFactory Factory { get; set; }
 
-        public Renderer(Engine engine)
-        {
-            GraphicsDeviceOptions options = new GraphicsDeviceOptions
-            {
-                PreferStandardClipSpaceYDirection = true,
-                PreferDepthRangeZeroToOne = true,
-            };
+        /// <summary>
+        /// Max number of quads this <see cref="Renderer"/> supports
+        /// </summary>
+        protected const uint J_MAXIMUM_DRAW_OBJECTS_PER_SCENE = 1024;
 
-            Device = VeldridStartup.CreateGraphicsDevice(engine.Window.MainWindow, options);
-            Factory = Device.ResourceFactory;
-        }
+        /// <summary>
+        /// Maximum number of vertices supported by this <see cref="Renderer"/>
+        /// Vertex counts higher than this will exceed the allocated size of the <see cref="VertexBuffer"/>
+        /// </summary>
+        protected const uint J_MAXIMUM_VERTEX_COUNT = J_MAXIMUM_DRAW_OBJECTS_PER_SCENE * 4;
 
-        public void CreateResources()
-        {
-            // Initialize shaders
-            VertexElementDescription positionSemantic = new("POSITION", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float3);
-            VertexElementDescription uvSemantic = new("TEXCOORD", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float2);
+        /// <summary>
+        /// Maximum number of triangle indices supported by this <see cref="Renderer"/>
+        /// Index counts higher than this will exceed the allocated size of the <see cref="IndexBuffer"/>
+        /// </summary>
+        protected const uint J_MAXIMUM_TRIANGLE_INDEX_COUNT = J_MAXIMUM_DRAW_OBJECTS_PER_SCENE * 6;
 
-            VertexLayoutDescription vertexLayout = new(positionSemantic, uvSemantic);
+        /// <summary>
+        /// Maximum number of triangles supported by this <see cref="Renderer"/>
+        /// </summary>
+        protected const uint J_MAXIMUM_TRIANGLE_COUNT = J_MAXIMUM_DRAW_OBJECTS_PER_SCENE * 2;
 
-            Shaders = GraphicsShader.GetShader("TestShader", Factory);
-
-            // Create pipeline
-            GraphicsPipelineDescription pipelineDescription = new();
-            pipelineDescription.BlendState = BlendStateDescription.SingleOverrideBlend;
-            
-            pipelineDescription.DepthStencilState = new(
-                depthTestEnabled: true,
-                depthWriteEnabled: true,
-                comparisonKind: ComparisonKind.Less);
-
-            pipelineDescription.RasterizerState = new(
-                cullMode: FaceCullMode.Back,
-                fillMode: PolygonFillMode.Solid,
-                frontFace: FrontFace.Clockwise,
-                depthClipEnabled: true,
-                scissorTestEnabled: false);
-
-            pipelineDescription.PrimitiveTopology = PrimitiveTopology.TriangleList;
-            pipelineDescription.ResourceLayouts = [];
-
-            pipelineDescription.ShaderSet = new(
-                vertexLayouts: [vertexLayout],
-                shaders: Shaders);
-
-            pipelineDescription.Outputs = Device.SwapchainFramebuffer.OutputDescription;
-
-            Pipeline = Factory.CreateGraphicsPipeline(pipelineDescription);
-            Commands = Factory.CreateCommandList();
-        }
-
-        public void BeginFrame()
-        {
-            Commands.Begin();
-            Commands.SetFramebuffer(Device.SwapchainFramebuffer);
-            Commands.ClearColorTarget(0, RgbaFloat.Black);
-            Commands.SetPipeline(Pipeline);
-        }
-
-        public void EndFrame()
-        {
-            Commands.End();
-            Device.SubmitCommands(Commands);
-            Device.SwapBuffers();
-        }
-
-        public void DrawScene(Scene scene)
-        {
-            foreach(Mesh mesh in scene.renderableObjects)
-            {
-                Commands.SetVertexBuffer(0, mesh.vertexBuffer);
-                Commands.SetIndexBuffer(mesh.indexBuffer, IndexFormat.UInt32);
-
-                Commands.DrawIndexed(
-                    indexCount: (uint)mesh.indices.Count,
-                    instanceCount: 1,
-                    indexStart: 0,
-                    vertexOffset: 0,
-                    instanceStart: 0);
-            }
-        }
-
-        public void Dispose()
-        {
-            Pipeline.Dispose();
-
-            foreach(Shader s in Shaders)
-            {
-                s.Dispose();
-            }
-
-            Commands.Dispose();
-            Device.Dispose();
-
-            GC.SuppressFinalize(this);
-        }
+        public abstract void CreateResources();
+        public abstract void RenderFrame(Scene scene);
     }
 }
