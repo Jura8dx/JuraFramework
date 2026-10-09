@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Veldrid;
 
-namespace JuraTK
+namespace JMath
 {
     /// <summary>
     /// Container for basic vertex information to be sent to shaders

@@ -1,4 +1,4 @@
-namespace JuraTK
+namespace JMath
 {
     public struct Rect
     {

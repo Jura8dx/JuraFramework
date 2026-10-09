@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 #pragma warning disable IDE0130
 
-namespace JuraTK
+namespace JMath
 {
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]

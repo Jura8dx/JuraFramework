@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Veldrid;
-using JuraTK;
+using JMath;
 
 namespace JuraFramework.Input
 {
@@ -12,10 +12,24 @@ namespace JuraFramework.Input
         private static readonly HashSet<MouseButton> mouseDownCurrent = [];
         private static readonly HashSet<MouseButton> mouseDownPrevious = [];
 
+        /// <summary>
+        /// Screen-space position of the cursor
+        /// </summary>
         public static Float2 MousePosition { get; private set; }
+
+        /// <summary>
+        /// Returns the current movement of the mouse calculated frame-by-frame
+        /// </summary>
         public static Float2 MouseDelta { get; private set; }
+
+        /// <summary>
+        /// Positive when scrolling up, negative when scrolling down
+        /// </summary>
         public static float MouseWheelDelta { get; private set; }
 
+        /// <summary>
+        /// Returns a movement vector created by the arrow keys
+        /// </summary>
         public static Float2 ArrowKeyDelta
         {
             get
@@ -24,6 +38,22 @@ namespace JuraFramework.Input
                 float d = GetKey(Key.Down) ? 1f : 0f;
                 float l = GetKey(Key.Left) ? 1f : 0f;
                 float r = GetKey(Key.Right) ? 1f : 0f;
+
+                return new Float2(r - l, u - d);
+            }
+        }
+
+        /// <summary>
+        /// Returns a movement vector created by the WASD keys
+        /// </summary>
+        public static Float2 WasdDelta
+        {
+            get
+            {
+                float u = GetKey(Key.W) ? 1f : 0f;
+                float d = GetKey(Key.S) ? 1f : 0f;
+                float l = GetKey(Key.A) ? 1f : 0f;
+                float r = GetKey(Key.D) ? 1f : 0f;
 
                 return new Float2(r - l, u - d);
             }
@@ -71,7 +101,7 @@ namespace JuraFramework.Input
         /// <returns></returns>
         public static bool GetMouseButtonUp(MouseButton button) => !mouseDownCurrent.Contains(button) && mouseDownPrevious.Contains(button);
 
-        public static void Update(InputSnapshot snapshot)
+        public static void CaptureInput(InputSnapshot snapshot)
         {
             keysDownPrevious.Clear();
             foreach(Key key in keysDownCurrent) keysDownPrevious.Add(key);
@@ -98,7 +128,6 @@ namespace JuraFramework.Input
             Float2 nextMousePos = new(snapshot.MousePosition.X, snapshot.MousePosition.Y);
             MouseDelta = nextMousePos - MousePosition;
             MousePosition = nextMousePos;
-
             MouseWheelDelta = snapshot.WheelDelta;
         }
     }

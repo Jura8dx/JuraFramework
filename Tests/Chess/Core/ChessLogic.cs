@@ -2,32 +2,32 @@
 
 namespace JuraFramework.Tests.Chess.Core
 {
-    public static class Chess
+    public static class Piece
     {
-        public static class Piece
+        public const int None = 0;
+        public const int King = 1;
+        public const int Pawn = 2;
+        public const int Knight = 3;
+        public const int Bishop = 4;
+        public const int Rook = 5;
+        public const int Queen = 6;
+
+        public const int White = 8;
+        public const int Black = 16;
+
+        public static int Color(int piece)
         {
-            public const int None = 0;
-            public const int King = 1;
-            public const int Pawn = 2;
-            public const int Knight = 3;
-            public const int Bishop = 4;
-            public const int Rook = 5;
-            public const int Queen = 6;
-
-            public const int White = 8;
-            public const int Black = 16;
-
-            public static int Color(int piece)
-            {
-                if (piece >> 4 == 1) 
-                    return Black;
-                return White;
-            }
+            if (piece >> 4 == 1)
+                return Black;
+            return White;
         }
+    }
 
-        public class ChessBoard
+    public class ChessLogic
+    {
+        public class ChessBoardInt
         {
-            private readonly int[] squares = new int[64];
+            public readonly int[] squares = new int[64];
 
             public int this[string square]
             {
@@ -53,9 +53,9 @@ namespace JuraFramework.Tests.Chess.Core
             }
         }
 
-        public static readonly ChessBoard Board = new ChessBoard();
+        public readonly ChessBoardInt Board = new ChessBoardInt();
 
-        public static void InitializeBoard()
+        public void InitializeBoard()
         {
             // White pieces - Starting position
             Board["a1"] = Piece.White | Piece.Rook;

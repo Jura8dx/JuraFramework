@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JuraFramework.Graphics
+namespace JuraFramework.Graphics;
+
+/// <summary>
+/// Containers are simply Drawables that get skipped in the rendering process.
+/// Children are still rendererd unless this drawable is inactive.
+/// </summary>
+public class Container : Drawable
 {
-    /// <summary>
-    /// Contains are derived from <see cref="Drawable"/> but get skipped in the rendering process.
-    /// Children of this <see cref="Container"/> will still be rendered
-    /// </summary>
-    public class Container : Drawable
-    {
-    }
 }

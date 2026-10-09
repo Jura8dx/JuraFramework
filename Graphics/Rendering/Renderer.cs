@@ -11,8 +11,18 @@ namespace JuraFramework.Graphics.Rendering
     /// </summary>
     public abstract class Renderer
     {
+        public DeviceBuffer VertexBuffer { get; set; }
+        public DeviceBuffer IndexBuffer { get; set; }
+
         public GraphicsDevice Device { get; set; }
         public ResourceFactory Factory { get; set; }
+
+        public CommandList Commands { get; set; }
+        public Shader[] Shaders { get; set; }
+        public Pipeline Pipeline { get; set; }
+
+        public ResourceLayout TextureLayout { get; set; }
+        public Sampler TextureSampler { get; set; }
 
         /// <summary>
         /// Max number of quads this <see cref="Renderer"/> supports
@@ -37,6 +47,9 @@ namespace JuraFramework.Graphics.Rendering
         protected const uint J_MAXIMUM_TRIANGLE_COUNT = J_MAXIMUM_DRAW_OBJECTS_PER_SCENE * 2;
 
         public abstract void CreateResources();
-        public abstract void RenderFrame(Scene scene);
+
+        public abstract void RenderFrame(Application target);
+
+        public abstract void Dispose();
     }
 }

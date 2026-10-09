@@ -2,7 +2,7 @@
 using System.Numerics;
 using System.Runtime.InteropServices;
 
-namespace JuraTK
+namespace JMath
 {
     /// <summary>
     /// Represents a color with 4 floating-point components (R, G, B, A).

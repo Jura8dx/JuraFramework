@@ -1,24 +1,27 @@
 ﻿#nullable disable
 
+using JuraFramework.Graphics.Textures;
 using Veldrid.Sdl2;
 
-namespace JuraFramework.Core
+namespace JuraFramework.Core;
+
+public abstract class Application
 {
-    public abstract class Application
+    public string Title { get; set; }
+    public string ResourcePath { get; set; }
+
+    public Engine Host { get; set; }
+    // public Sdl2Window Window => Host?.Window.MainWindow;
+    public Scene ActiveScene { get; protected set; }
+
+    public virtual void Update()
     {
-        public string Title { get; set; }
-        public Engine ApplicationHost { get; set; }
-        public Sdl2Window Window => ApplicationHost?.Window.MainWindow;
-        public Scene ActiveScene { get; protected set; }
+        ActiveScene.Update();
+    }
 
-        public virtual void Update()
-        {
-            ActiveScene?.Update();
-        }
-
-        public virtual void Start()
-        {
-            
-        }
+    public virtual void Start()
+    {
+        ActiveScene.Load();
+        ActiveScene.Start();
     }
 }
